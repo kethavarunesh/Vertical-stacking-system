@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Layout Data</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Search Layout Data</h1>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="layout">Select Layout</label>
+                        <select name="layout" class="form-control" id="layout">
+                            <option value="">Select a layout</option>
+                            {% for layout in layouts %}
+                            <option value="{{ layout.layout_name }}">{{ layout.layout_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="component1">Component 1</label>
+                        <input type="text" class="form-control" id="component1" name="component1" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="component2">Component 2</label>
+                        <input type="text" class="form-control" id="component2" name="component2" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="binsno">Bin Serial Number</label>
+                        <input type="text" class="form-control" id="binsno" name="binsno" />
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">Search</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-10">
+                {% if entrydetails %}
+                    <table class="table table-bordered table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Bin Serial No</th>
+                                <th>Bin Location</th>
+                                <th>Project Name</th>
+                                <th>Component1</th>
+                                <th>Component2</th>
+                                <th>Testing</th>
+                                <th>Remarks</th>
+                                <th>Employee Code</th>
+                                <th>Layout Name</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in entrydetails %}
+                                <tr>
+                                    <td>{{ row.binserial_no }}</td>
+                                    <td>{{ row.bin_location }}</td>
+                                    <td>{{ row.projectname }}</td>
+                                    <td>{{ row.component1 }}</td>
+                                    <td>{{ row.component2 }}</td>
+                                    <td>{{ row.testing }}</td>
+                                    <td>{{ row.remarks }}</td>
+                                    <td>{{ row.employeecode }}</td>
+                                    <td>{{ row.layout.layout_name }}</td>
+                                    <td>{{ row.date }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="text-center">No matching results found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manual Form</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    #projectdropdown{
+      width:200px;
+    }
+    #testing{
+      width:100px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container mt-4">
+    <form method="post" action="{% url 'manual' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="employeecode">Employee Code</label>
+            <input type="text" class="form-control" id="employeecode" name="employeecode" />
+        </div>
+        <div class="form-group">
+            <label for="layout">Select Layout</label>
+            <select name="layout" class="form-control" id="layout">
+                <option value="">Select a layout</option>
+                {% for layout in layouts %}
+                <option value="{{ layout.layout_name }}">{{ layout.layout_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="table-responsive">
+            <table class="table" id="personTable">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>BIN Serial Number</th>
+                        <th>BIN Location</th>
+                        <th>Project</th>
+                        <th>Component1</th>
+                        <th>Component2</th>
+                        <th>Testing</th>
+                        <th>Remarks</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="serial-number"><input type="text" name="sno[]" readonly value="1"
+                                class="form-control" /></td>
+                        <td><input type="text" name="binsno[]" required class="form-control" /></td>
+                        <td><input type="text" name="binloc[]" required class="form-control" /></td>
+                        <td>
+                            <select id ='projectdropdown' name="project[]" required class="form-control">
+                               
+                                <option value="6FRA_6068">6FRA_6068</option>
+                                <option value="9000 HP">9000 HP</option>
+                                <option value="ALTERNATORS">ALTERNATORS</option>
+                                <option value="DEMU">DEMU</option>
+                                <option value="EMU">EMU</option>
+                                <option value="EV PROJECT">EV PROJECT</option>
+                                <option value="HIGH SPEED (Train-18)">HIGH SPEED (Train-18)</option>
+                                <option value="KOLKATA METRO">KOLKATA METRO</option>
+                                <option value="MEMU ONBOARD">MEMU ONBOARD</option>
+                                <option value="MOSCOW">MOSCOW</option>
+                                <option value="UNDER SLUNG EMU">UNDER SLUNG EMU</option>
+                                <option value="UNDER SLUNG MEMU">UNDER SLUNG MEMU</option>
+                                <option value="WDG4">WDG4</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="component1[]" required class="form-control" /></td>
+                        <td><input type="text" name="component2[]" required class="form-control" /></td>
+                        <td>
+                            <select id='testing' name="testing[]" required class="form-control">
+                                
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </td>
+                        <td><input type="text" name="remarks[]" required class="form-control" /></td>
+                        <!-- Delete Last Row button -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <button type="button" onclick="addRow()" class="btn btn-primary">Add Row</button>
+        <button type="button" onclick="deleteLastRow()" class="btn btn-danger">Delete Row</button>
+        <br /><br />
+
+        <input type="submit" value="Submit" class="btn btn-success" />
+    </form>
+</div>
+
+  <!-- Bootstrap JS and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+    function addRow() {
+      var table = document.getElementById("personTable").getElementsByTagName("tbody")[0];
+      var newRow = table.insertRow(table.rows.length);
+      var columns = [
+        "serial-number",
+        "binsno[]",
+        "binloc[]",
+        "project[]",
+        "component1[]",
+        "component2[]",
+        "testing[]",
+        "remarks[]"
+      ];
+
+      for (var i = 0; i < columns.length; i++) {
+        var cell = newRow.insertCell(i);
+        var input = document.createElement("input");
+
+        if (columns[i] === "project[]") {
+          var projectSelect = document.createElement("select");
+          projectSelect.name = columns[i];
+          projectSelect.required = true;
+          ["6FRA_6068", "9000 HP", "ALTERNATORS","DEMU","EMU","EV PROJECT","HIGH SPEED (Train-18)",
+          "KOLKATA METRO","MEMU ONBOARD","MOSCOW","UNDER SLUNG EMU","UNDER SLUNG MEMU","WDG4"
+          ].forEach(function (project) {
+            var option = document.createElement("option");
+            option.value = project;
+            option.text = project;
+            projectSelect.appendChild(option);
+          });
+          projectSelect.classList.add("form-control");
+          cell.appendChild(projectSelect);
+        } else if (columns[i] === "testing[]") {
+          var testSelect = document.createElement("select");
+          testSelect.name = columns[i];
+          testSelect.required = true;
+          ["yes", "no"].forEach(function (test) {
+            var option = document.createElement("option");
+            option.value = test;
+            option.text = test;
+            testSelect.appendChild(option);
+          });
+          testSelect.classList.add("form-control");
+          cell.appendChild(testSelect);
+        } else {
+          input.type = "text";
+          input.name = columns[i];
+          input.classList.add("form-control");
+          if (columns[i] === "serial-number") {
+            input.setAttribute("readonly", true);
+            input.value = table.rows.length;
+          }
+          cell.appendChild(input);
+        }
+      }
+    }
+
+    function deleteLastRow() {
+      var table = document.getElementById("personTable").getElementsByTagName("tbody")[0];
+      if (table.rows.length > 1) {
+        table.deleteRow(table.rows.length - 1);
+      }
+    }
+  </script>
+</body>
+</html>

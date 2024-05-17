@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Search Results</h1>
+        <form action="#" method="GET" class="mb-4">
+            <div class="form-group">
+                <label for="bin">Enter Bin Serial Number:</label>
+                <input type="text" id="bin" name="bin" class="form-control" placeholder="Enter Bin Serial Number">
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+
+        {% if bin_serial_number %}
+            <h2 class="mb-4">Results for Bin Serial Number: {{ bin_serial_number }}</h2>
+            <form action="{% url 'update_details' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="bin_serial_number" value="{{ bin_serial_number }}">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Bin Serial Number</th>
+                                <th>Bin Location</th>
+                                <th>Project Name</th>
+                                <th>Component 1</th>
+                                <th>Component 2</th>
+                                <th>Testing</th>
+                                <th>Remarks</th>
+                                <th>Employee Code</th>
+                                <th>Layout</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for detail in table_details %}
+                            <tr>
+                                <td>{{ detail.binserial_no }}</td>
+                                <td>{{ detail.bin_location }}</td>
+                                <td>{{ detail.projectname }}</td>
+                                <td><input type="text" class="form-control" name="component1" value="{{ detail.component1 }}"></td>
+                                <td><input type="text" class="form-control" name="component2" value="{{ detail.component2 }}"></td>
+                                <td>
+                                    <select name="testing" class="form-control">
+                                        <option value="Yes" {% if detail.testing == 'Yes' %} selected {% endif %}>Yes</option>
+                                        <option value="No" {% if detail.testing == 'No' %} selected {% endif %}>No</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" class="form-control" name="remarks" value="{{ detail.remarks }}"></td>
+                                <td>{{ detail.employeecode }}</td>
+                                <td>{{ detail.layout }}</td>
+                                <td>{{ detail.date }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <button type="submit" class="btn btn-success mt-3">Save Changes</button>
+            </form>
+        {% endif %}
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
